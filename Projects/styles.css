@@ -1,0 +1,14 @@
+.top-bar{
+    border: 1px solid black;
+}
+li{
+    list-style-type: none;
+}
+a{
+    text-decoration: none;
+}
+.links{
+    display: flex;
+    justify-content: right;
+    margin-left: 200px;
+}
