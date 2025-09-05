@@ -1,14 +1,42 @@
-.top-bar{
-    border: 1px solid black;
+body{
+    background-image: url('home_jet_slide_1_bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    /* background-attachment: fixed; */
+    
+    /* background-color: cadetblue; */
+
 }
-li{
+.top-bar{
+    /* border: 1px solid black; */
+    padding-bottom: 400px;
+    display: flex;
+    justify-content: space-between;
+    
+}
+.links li{
     list-style-type: none;
+    display: inline-block;
+    margin-right: 10px;
+    padding-top: 20px;
+    font-size: 20px;
 }
 a{
     text-decoration: none;
+    color: #ACB2B8;
 }
-.links{
-    display: flex;
-    justify-content: right;
-    margin-left: 200px;
+a:hover{
+  color: white;  
+  transition-duration: 0.5s;
+}
+#buy-color{
+    margin-left: 10px;
+    color: #B59A5A;
+    
+}
+.logo{
+    margin-right: 1200px;
+    display: inline-flex;
+    padding-top: 20px;
 }
