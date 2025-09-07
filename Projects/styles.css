@@ -1,42 +1,78 @@
 body{
+    margin: 0px;
     background-image: url('home_jet_slide_1_bg.jpg');
     background-repeat: no-repeat;
-    background-size: cover;
     background-position: center center;
-    /* background-attachment: fixed; */
-    
-    /* background-color: cadetblue; */
-
+    background-attachment: fixed;
+    background-size: 100% auto;
+    background-position: top;
+    /* font-family: Arial, Helvetica, sans-serif; */
+    font: 17px Arial, Helvetica, sans-serif;
 }
-.top-bar{
-    /* border: 1px solid black; */
-    padding-bottom: 400px;
+.menu{
     display: flex;
     justify-content: space-between;
-    
-}
-.links li{
-    list-style-type: none;
-    display: inline-block;
-    margin-right: 10px;
     padding-top: 20px;
-    font-size: 20px;
+    margin-inline: 30px;
 }
-a{
+.menu ul{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    display: inline-block;
+
+}
+.menu a{
     text-decoration: none;
     color: #ACB2B8;
+    display: block;
+    padding: 15px;
+    text-align: center;
 }
 a:hover{
   color: white;  
   transition-duration: 0.5s;
 }
-#buy-color{
-    margin-left: 10px;
-    color: #B59A5A;
-    
+.menu li{
+    float: left;
 }
-.logo{
-    margin-right: 1200px;
-    display: inline-flex;
-    padding-top: 20px;
+#buy-color{
+    color: #B59A5A;
+}
+.slider-top h2{
+    font-style: italic;
+    z-index: 5;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: none;
+    letter-spacing: 2px;
+    visibility: visible;
+    text-align: right;
+    padding-top: 350px;
+    padding-right: 150px;
+    line-height: 50px;
+    font-weight: 500;
+    font-size: 50px;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+}
+
+.slider-top p{
+    color: white;
+    z-index: 6;
+    font-family: Ubuntu;
+    text-shadow: none;
+    letter-spacing: 2px;
+    visibility: visible;
+    text-align: left;
+    line-height: 33px;
+    font-weight: 300;
+    font-size: 33px;
+    /* text-align: right; */
+}
+
+.slider-top{
+    display: block;
+    justify-content: center;
+    align-items: right;
 }
