@@ -4,45 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Muffins Group</title>
+    <title>BeJet - Private Jet Services</title>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="menu">
-            <img src="jet.png" alt="logo">
-            <div>
-            <ul>
-                <li><a href="">Home</a></li>
-                <li><a href="">About</a></li>
-                <li><a href="">Aircraft</a></li>
-                <li><a href="">Services</a></li>
-                <li><a href="">Contact Us</a></li>
-                <li><a href="checkout.html" id="buy-color">Buy Now</a></li>
-            </ul>
-        </div>
-        </div>
-    </nav>
-    <div class="slider-top">
-        <img src="home_jet_slide_1_line.png" alt="line" class="line-img"> 
-        <div class="text-block">
-            <h2>BE-102</h2>
-            <p>Nullo impedient sit unmet magna</p>
-        </div>
-    </div>
-    <div class="img-container">
-        <div class="img-block">
-            <img src="home_jet_welcome_bg.jpg" alt="img1" class="welcome-img">
-            <div class="img-text">SED CULIS PHARETRA DUIS FINIBUS</div>
-        </div>
-        <div class="img-block">
-            <img src="home_jet_welcome_bg2.jpg" alt="img2" class="welcome-img2">
-            <div class="img-text">
-                <div class="text1">Quisque fermentum tortor nunc; sit amet dapibus dolor bibendum at? Morbi sodales rutrum tempus. Sed congue interdum massa ac.</div>
-                <div class="text1">Sed neque enim, ultrices sed sapien sit amet, volutpat dictum lorem? Duis eu ligula nec leo laoreet lobortis. Duis finibus, est sed iaculis pharetra..</div>
+    <header>
+        <nav>
+            <div class="container">
+                <a href="#">
+                    <img src="assets/images/jet.png" alt="BeJet-Logo" class="logo">
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#aircraft">Aircraft</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="checkout.html" class="buy-now">Buy now</a></li>
+                </ul>
             </div>
-            
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero-section">
+            <div class="hero-overlay">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-line"></div>
+                        <h1 class="hero-title">BE-102</h1>
+                        <p class="hero-subtitle">Nulla imperdiet sit<br>amet magna</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="welcome-section">
+            <div class="welcome-left">
+                <h2>SED CULIS PHARETRA DUIS FINIBUS</h2>
+            </div>
+            <div class="welcome-right">
+                <p>Quisque fermentum tortor nunc; sit amet dapibus dolor bibendum at? Morbi sodales rutrum tempus. Sed congue interdum massa ac.</p>
+                <p>Sed neque enim, ultrices sed sapien sit amet, volutpat dictum lorem? Duis nec ligula nec leo laoreet lobortis. Duis finibus, est sed iaculis pharetra..</p>
+            </div>
+        </section>
+
+        <section id="services" class="services-section">
+            <div class="container">
+                <div class="service-card">
+                    <img src="assets/images/home_jet_offer1.jpg" alt="Airport Transport">
+                    <div class="service-icon">👁</div>
+                    <h3>AIRPORT TRANSPORT</h3>
+                    <p>Mauris porttitor, turpis id placerat hendrerit, enim odio interdum metus, ac vehicula nisl est in mi! Nunc malesuada ac lectus sit amet vehicula. Cum posuere.</p>
+                    <a href="#">Read more</a>
+                </div>
+                <div class="service-card">
+                    <img src="assets/images/home_jet_offer2.jpg" alt="Concierge">
+                    <div class="service-icon">📅</div>
+                    <h3>CONCIERGE</h3>
+                    <p>Maecenas tempus tempus sem vulputate iaculis? Vestibulum lacinia metus est, eu pretium nunc cursus in. Sed id augue eget magna venenatis eleifend sed.</p>
+                    <a href="#">Read more</a>
+                </div>
+                <div class="service-card">
+                    <img src="assets/images/home_jet_offer3.jpg" alt="Catering">
+                    <div class="service-icon">☕</div>
+                    <h3>CATERING</h3>
+                    <p>Morbi pulvinar posuere sapien in finibus. Donec posuere felis enim, et sagittis lorem consectetur sit amet. Nulla quis orci vitae dolor rutrum viverra ut metus.</p>
+                    <a href="#">Read more</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="aircraft" class="map-section">
+            <div class="container">
+                <h2>TAKE A PRIVATE JET<br>ON YOUR BUSINESS TRIP<br>AND DISCOVER LUXURY TRAVEL AT IT'S FINEST.</h2>
+                <a href="#">Check our pricing plans</a>
+                <a href="#">Contact us for more info</a>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="container">
+                <div class="stat-box">
+                    <div class="stat-icon">👨‍✈️</div>
+                    <h3>12</h3>
+                    <p>Integer aliquam</p>
+                </div>
+                <div class="stat-box gold">
+                    <div class="stat-icon">✈️</div>
+                    <h3>1520</h3>
+                    <p>Bibendum sapien</p>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">⚡</div>
+                    <h3>952k</h3>
+                    <p>Vestibulum commodo</p>
+                </div>
+                <div class="stat-box">
+                    <h3>FLY WITH BEJET</h3>
+                    <p>Integer vel augue quis ligula vestibulum posuere. Aenean ut lacus.</p>
+                    <p>Vivamus sit amet ultrices elit, vitae luctus enim. Maecenas orci sapien, sagittis nec mi et, finibus malesuada nunc.</p>
+                    <a href="#">Read more</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-col">
+                <h4>ABOUT US</h4>
+                <p>Vitae adipiscing turpis. Aenean ligula nibh in, molestie id viverra a, dapibus at dolor. Aenean ligula nibh in, molestie id viverra a, dapibus at dolor.molestie id viverra a, dapibus.</p>
+            </div>
+            <div class="footer-col">
+                <h4>OUR OFFER</h4>
+                <ul>
+                    <li>> Aenean sollicituidin orem qui at dolor</li>
+                    <li>> Duis sed odio sit amet viverra a nibh</li>
+                    <li>> Morbi accumsan ipsum velit adipiscing</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>OUR ADDRESS</h4>
+                <p>BeJet<br>Level 13, 2 Elizabeth St,<br>Melbourne, Victoria 3000<br>Australia</p>
+            </div>
+            <p class="copyright">&copy; 2021 Betheme by Muffin group | All Rights Reserved | Powered by WordPress</p>
         </div>
-    </div>
-    <!-- <script src="script.js"></script> -->
+    </footer>
 </body>
 </html>
