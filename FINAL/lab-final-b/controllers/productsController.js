@@ -45,6 +45,32 @@ const productsController = {
         }
     },
 
+    addToCart: async (req, res) => {
+        try {
+            const { id, quantity } = req.body;
+            const product = await Product.findById(id);
+            if (!product) return res.status(404).json({ error: 'Product not found' });
+            
+            if (!req.session.cart) req.session.cart = [];
+            const existing = req.session.cart.find(item => item._id === id);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + (parseInt(quantity) || 1);
+            } else {
+                req.session.cart.push({
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    description: product.description,
+                    image: product.image,
+                    quantity: parseInt(quantity) || 1
+                });
+            }
+            res.json({ success: true, cartCount: req.session.cart.length });
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to add to cart' });
+        }
+    }
+
 };
 
 module.exports = productsController;

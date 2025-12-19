@@ -12,6 +12,7 @@
                 <li><a href="/#contact">Contact</a></li>
                 <% if (user) { %>
                 <li>Welcome, <%= user.name %></li>
+                <li><a href="/order/preview">Order Preview (<%= (req.session && req.session.cart) ? req.session.cart.length : 0 %>)</a></li>
                 <li><a href="/order/my-orders">My Orders</a></li>
                 <li><a href="/auth/logout">Logout</a></li>
                 <% } else { %>

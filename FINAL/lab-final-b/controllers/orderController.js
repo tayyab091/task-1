@@ -2,9 +2,48 @@ const Order = require('../models/Order');
 
 const orderController = {
     getOrderPreview: (req, res) => {
+        if (req.method === 'POST') {
+            // Handle confirmation
+            const cartItems = req.session?.cart || [];
+            if (!cartItems.length) {
+                return res.redirect('/products');
+            }
+            const checkoutData = req.body;
+            if (!checkoutData.email) {
+                return res.redirect('/order/preview');
+            }
+            let total = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+            let discount = 0;
+            const coupon = req.body.coupon;
+            if (req.discountApplied) {
+                discount = total * req.discountRate;
+                total -= discount;
+            }
+            const order = new Order({
+                user: req.session.user ? req.session.user._id : null,
+                email: checkoutData.email,
+                items: cartItems.map(item => ({
+                    product: item._id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity || 1
+                })),
+                total,
+                discount
+            });
+            order.save().then(() => {
+                req.session.cart = [];
+                delete req.session.checkoutData;
+                res.redirect('/success?orderId=' + order._id);
+            }).catch(err => {
+                console.error(err);
+                res.status(500).render('error', { message: 'Error placing order', layout: false });
+            });
+            return;
+        }
         const cartItems = req.session?.cart || [];
         if (!cartItems.length) {
-            return res.redirect('/checkout');
+            return res.redirect('/products');
         }
         let total = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         let discount = 0;
@@ -20,45 +59,8 @@ const orderController = {
             total,
             discount,
             coupon,
-            email: req.session.checkoutData?.email || ''
-        });
-    },
-
-    postOrderPreview: (req, res) => {
-        const cartItems = req.session?.cart || [];
-        if (!cartItems.length) {
-            return res.redirect('/checkout');
-        }
-        const checkoutData = req.session.checkoutData;
-        if (!checkoutData) {
-            return res.redirect('/checkout');
-        }
-        let total = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-        let discount = 0;
-        const coupon = req.body.coupon;
-        if (req.discountApplied) {
-            discount = total * req.discountRate;
-            total -= discount;
-        }
-        const order = new Order({
-            user: req.session.user ? req.session.user._id : null,
-            email: checkoutData.email,
-            items: cartItems.map(item => ({
-                product: item._id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity || 1
-            })),
-            total,
-            discount
-        });
-        order.save().then(() => {
-            req.session.cart = [];
-            delete req.session.checkoutData;
-            res.redirect('/success?orderId=' + order._id);
-        }).catch(err => {
-            console.error(err);
-            res.status(500).render('error', { message: 'Error placing order', layout: false });
+            email: req.session.user ? req.session.user.email : (req.session.checkoutData?.email || ''),
+            checkoutData: req.session.checkoutData || {}
         });
     },
 

@@ -21,7 +21,7 @@ const authController = {
                 });
             }
             req.session.user = user;
-            res.redirect('/');
+            res.redirect('/products');
         } catch (error) {
             res.status(500).render('error', { message: 'Login error', layout: false });
         }
@@ -56,7 +56,7 @@ const authController = {
             const user = new User({ name, email, password });
             await user.save();
             req.session.user = user;
-            res.redirect('/');
+            res.redirect('/products');
         } catch (error) {
             res.status(500).render('error', { message: 'Registration error', layout: false });
         }
