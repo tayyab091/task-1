@@ -1,0 +1,38 @@
+<div class="container">
+    <h1>Manage Orders</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Email</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+            <tr>
+                <td><%= order._id %></td>
+                <td><%= order.email %></td>
+                <td>$<%= order.total.toFixed(2) %></td>
+                <td><%= order.status %></td>
+                <td><%= order.createdAt.toDateString() %></td>
+                <td>
+                    <form method="POST" action="/admin/update-status" style="display: inline;">
+                        <input type="hidden" name="id" value="<%= order._id %>">
+                        <% if (order.status === 'Placed') { %>
+                        <button type="submit" name="status" value="Processing" class="btn btn-sm btn-warning">Set to Processing</button>
+                        <% } else if (order.status === 'Processing') { %>
+                        <button type="submit" name="status" value="Delivered" class="btn btn-sm btn-success">Set to Delivered</button>
+                        <% } else { %>
+                        <span class="text-muted">Completed</span>
+                        <% } %>
+                    </form>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

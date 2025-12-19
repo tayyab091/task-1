@@ -1,0 +1,137 @@
+<div class="container">
+    <main>
+        <div class="py-5 text-center">
+            <h2>Checkout form</h2>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-md-5 col-lg-4 order-md-last">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary">Your cart</span>
+                    <span class="badge bg-primary rounded-pill"><%= cartItems.length %></span>
+                </h4>
+                <ul class="list-group mb-3">
+                    <% cartItems.forEach(item => { %>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0"><%= item.name %></h6>
+                            <small class="text-body-secondary"><%= item.description %></small>
+                        </div>
+                        <span class="text-body-secondary">$<%= item.price %></span>
+                    </li>
+                    <% }); %>
+                    <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                        <div class="text-success">
+                            <h6 class="my-0">Promo code</h6>
+                            <small>EXAMPLECODE</small>
+                        </div>
+                        <span class="text-success">−$<%= promoDiscount %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total (USD)</span>
+                        <strong>$<%= total %></strong>
+                    </li>
+                </ul>
+                <form class="card p-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Promo code">
+                        <button type="submit" class="btn btn-secondary">Redeem</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mb-3">Billing address</h4>
+                <form id="checkoutForm" method="POST" action="/checkout">
+                    
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullname" name="fullname">
+                        <div class="invalid-feedback">Full name is required (at least 3 characters).</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="email" name="email">
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone">
+                        <div class="invalid-feedback">Phone must be at least 10 digits.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name="address">
+                        <div class="invalid-feedback">Address is required.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" name="city">
+                        <div class="invalid-feedback">City is required.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="postalcode" class="form-label">Postal Code</label>
+                        <input type="text" class="form-control" id="postalcode" name="postalcode">
+                        <div class="invalid-feedback">Postal code must be 4-6 digits.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <select class="form-select" id="country" name="country">
+                            <option value="">Choose...</option>
+                            <option value="US">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="CA">Canada</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a country.</div>
+                    </div>
+                    
+                    <h4 class="mb-3">Payment</h4>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input id="credit" name="paymentMethod" type="radio" class="form-check-input" value="credit">
+                            <label class="form-check-label" for="credit">Credit card</label>
+                        </div>
+                        <div class="form-check">
+                            <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" value="paypal">
+                            <label class="form-check-label" for="paypal">PayPal</label>
+                        </div>
+                        <div class="invalid-feedback d-block" id="payment-error">Please select a payment method.</div>
+                    </div>
+                    
+                    <div id="cardFields">
+                        <div class="mb-3">
+                            <label for="cardname" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="cardname" name="cardname">
+                            <div class="invalid-feedback">Name on card is required.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cardnumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardnumber" name="cardnumber">
+                            <div class="invalid-feedback">Card number is required.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" name="terms">
+                            <label class="form-check-label" for="terms">I agree to terms and conditions</label>
+                            <div class="invalid-feedback">You must agree to terms.</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="/js/checkout.js"></script>

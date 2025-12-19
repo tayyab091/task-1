@@ -1,0 +1,489 @@
+<div class="products-page">
+    <div class="container">
+        <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+            <div>
+                <h1>Our Exclusive Fleet</h1>
+                <p>Browse our collection of luxury private jets and premium services</p>
+            </div>
+            <div>
+                <a href="/admin/add-product" class="btn btn-primary" id="addItemBtn">Add Item</a>
+            </div>
+        </div>
+
+
+                <!-- Purchase Modal -->
+                <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="purchaseProductTitle">Buy</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <img id="purchaseProductImage" src="" alt="product" style="width:120px;height:80px;object-fit:cover;border-radius:6px;">
+                                    <div>
+                                        <h6 id="purchaseProductName"></h6>
+                                        <p id="purchaseProductDesc" style="font-size:13px;color:#666;margin:0 0 8px 0;"></p>
+                                        <strong id="purchaseProductPrice"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a id="detailsLink" href="#" class="btn btn-secondary">View Details</a>
+                                <button type="button" id="confirmPurchaseBtn" class="btn btn-primary">Confirm Purchase</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Modal -->
+                <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body text-center">
+                                <h5 id="successMessage">Success!</h5>
+                                <button type="button" class="btn btn-success mt-3" data-bs-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                // Wait for full load so bootstrap JS is available
+                window.addEventListener('load', function() {
+                    const purchaseModalEl = document.getElementById('purchaseModal');
+                    const successModalEl = document.getElementById('successModal');
+                    if (!window.bootstrap) return;
+                    const purchaseModal = new bootstrap.Modal(purchaseModalEl);
+                    const successModal = new bootstrap.Modal(successModalEl);
+
+                    document.querySelectorAll('.btn-buy').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const id = this.dataset.id;
+                            const name = this.dataset.name;
+                            const price = this.dataset.price;
+                            const image = this.dataset.image;
+                            // Prefer reading the full hidden description if present
+                            let desc = '';
+                            const card = this.closest('.product-card');
+                            if (card) {
+                                const fullEl = card.querySelector('.product-full-desc');
+                                if (fullEl) desc = fullEl.textContent.trim();
+                                else {
+                                    const descEl = card.querySelector('.product-description');
+                                    if (descEl) desc = descEl.textContent.trim();
+                                }
+                            }
+                            if (!desc) desc = this.dataset.desc || '';
+
+                            document.getElementById('purchaseProductTitle').textContent = 'Buy ' + name;
+                            document.getElementById('purchaseProductName').textContent = name;
+                            document.getElementById('purchaseProductPrice').textContent = '$' + Number(price).toLocaleString();
+                            document.getElementById('purchaseProductImage').src = image;
+                            document.getElementById('purchaseProductDesc').textContent = desc;
+                            document.getElementById('detailsLink').href = '/products/' + id;
+
+                            purchaseModal.show();
+                        });
+                    });
+
+                    const confirmBtn = document.getElementById('confirmPurchaseBtn');
+                    if (confirmBtn) {
+                        confirmBtn.addEventListener('click', function() {
+                            purchaseModal.hide();
+                            const name = document.getElementById('purchaseProductName').textContent || '';
+                            document.getElementById('successMessage').textContent = 'Success! Purchase completed for ' + name;
+                            successModal.show();
+                        });
+                    }
+                });
+                </script>
+
+        <div class="filters-section">
+            <form method="GET" action="/products" class="filters-form">
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="">All Categories</option>
+                        <% categories.forEach(cat => { %>
+                            <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="minPrice">Min Price ($)</label>
+                    <input type="number" name="minPrice" id="minPrice" class="form-control" 
+                           value="<%= minPrice %>" placeholder="0">
+                </div>
+
+                <div class="filter-group">
+                    <label for="maxPrice">Max Price ($)</label>
+                    <input type="number" name="maxPrice" id="maxPrice" class="form-control" 
+                           value="<%= maxPrice %>" placeholder="Any">
+                </div>
+
+                <div class="filter-group">
+                    <label for="limit">Items per page</label>
+                    <select name="limit" id="limit" class="form-control">
+                        <option value="5" <%= limit === 5 ? 'selected' : '' %>>5</option>
+                        <option value="10" <%= limit === 10 ? 'selected' : '' %>>10</option>
+                        <option value="15" <%= limit === 15 ? 'selected' : '' %>>15</option>
+                        <option value="20" <%= limit === 20 ? 'selected' : '' %>>20</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="/products" class="btn btn-secondary">Clear</a>
+                </div>
+            </form>
+
+            <div class="results-info">
+                <p>Showing <%= products.length %> of <%= totalProducts %> products</p>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            <% if (products.length === 0) { %>
+                <div class="no-products">
+                    <h3>No products found</h3>
+                    <p>Try adjusting your filters or <a href="/products">view all products</a></p>
+                </div>
+            <% } else { %>
+                <% products.forEach(product => { %>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="<%= product.image %>" alt="<%= product.name %>">
+                            <% if (!product.inStock) { %>
+                                <span class="out-of-stock">Out of Stock</span>
+                            <% } %>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category"><%= product.category %></span>
+                            <h3 class="product-name"><%= product.name %></h3>
+                            <p class="product-description"><%= product.description.substring(0, 100) %>...</p>
+                            <div class="product-full-desc" style="display:none;"><%= product.description %></div>
+                            
+                            <% if (product.specifications && product.specifications.passengers) { %>
+                                <div class="product-specs">
+                                    <span><i class="fas fa-users"></i> <%= product.specifications.passengers %> pax</span>
+                                    <span><i class="fas fa-route"></i> <%= product.specifications.range %></span>
+                                </div>
+                            <% } %>
+                            
+                            <div class="product-footer">
+                                <span class="product-price">$<%= product.price.toLocaleString() %></span>
+                                <button type="button" 
+                                        class="btn btn-buy" 
+                                        data-id="<%= product._id %>"
+                                        data-name="<%= product.name %>"
+                                        data-price="<%= product.price %>"
+                                        data-image="<%= product.image %>"
+                                        data-desc="<%= product.description %>">
+                                    Buy Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %><%= category ? '&category=' + category : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %>" 
+                       class="pagination-btn">Previous</a>
+                <% } %>
+
+                <div class="pagination-numbers">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <% if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) { %>
+                            <a href="?page=<%= i %>&limit=<%= limit %><%= category ? '&category=' + category : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %>" 
+                               class="pagination-number <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                        <% } else if (i === currentPage - 3 || i === currentPage + 3) { %>
+                            <span class="pagination-dots">...</span>
+                        <% } %>
+                    <% } %>
+                </div>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %><%= category ? '&category=' + category : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %>" 
+                       class="pagination-btn">Next</a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+.products-page {
+    background-color: #2c3e50;
+    min-height: 100vh;
+    padding: 120px 0 60px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.page-header h1 {
+    font-size: 48px;
+    color: #c9a961;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    font-size: 18px;
+    color: #a8b3c1;
+}
+
+.filters-section {
+    background-color: #34495e;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.filters-form {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #c9a961;
+    font-size: 14px;
+}
+
+.filter-group .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4a5f7f;
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 4px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #c9a961;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #4a5f7f;
+    color: white;
+}
+
+.results-info {
+    margin-top: 20px;
+    text-align: center;
+    color: #a8b3c1;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.product-card {
+    background-color: #34495e;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.out-of-stock {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-category {
+    display: inline-block;
+    background-color: #2c3e50;
+    color: #c9a961;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.product-description {
+    color: #a8b3c1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.product-specs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #a8b3c1;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #2c3e50;
+}
+
+.product-price {
+    font-size: 24px;
+    color: #c9a961;
+    font-weight: bold;
+}
+
+.btn-view {
+    background-color: #c9a961;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-view:hover {
+    background-color: #b08d4f;
+}
+
+.btn-buy {
+    background-color: #c9a961;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-buy:hover { background-color: #b08d4f; }
+
+.no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-products h3 {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.no-products p {
+    color: #a8b3c1;
+}
+
+.no-products a {
+    color: #c9a961;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.pagination-btn,
+.pagination-number {
+    padding: 10px 15px;
+    background-color: #34495e;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.pagination-btn:hover,
+.pagination-number:hover {
+    background-color: #c9a961;
+}
+
+.pagination-number.active {
+    background-color: #c9a961;
+}
+
+.pagination-dots {
+    color: #a8b3c1;
+    padding: 0 5px;
+}
+
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
