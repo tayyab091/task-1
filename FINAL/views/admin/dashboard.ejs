@@ -1,0 +1,46 @@
+<div class="admin-dashboard">
+    <div class="container">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <a href="/admin/add-product" class="btn btn-primary">Add New Product</a>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3><%= totalProducts %></h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+
+        <div class="products-table">
+            <h2>Recent Products</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                    <tr>
+                        <td><%= product.name %></td>
+                        <td>$<%= product.price.toLocaleString() %></td>
+                        <td><%= product.category %></td>
+                        <td><%= product.inStock ? 'In Stock' : 'Out of Stock' %></td>
+                        <td class="actions">
+                            <a href="/admin/edit-product/<%= product._id %>" class="btn-edit">Edit</a>
+                            <form method="POST" action="/admin/delete-product/<%= product._id %>" style="display:inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Delete this product?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

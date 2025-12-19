@@ -1,0 +1,65 @@
+<form method="POST" action="<%= action %>" class="product-form">
+    <div class="form-group">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" name="name" value="<%= product ? product.name : '' %>" required>
+    </div>
+
+    <div class="form-group">
+        <label for="price">Price ($)</label>
+        <input type="number" id="price" name="price" step="0.01" value="<%= product ? product.price : '' %>" required>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+            <option value="">Select Category</option>
+            <% categories.forEach(cat => { %>
+                <option value="<%= cat %>" <%= product && product.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }); %>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="image">Image URL</label>
+        <div class="image-input-group">
+            <input type="text" id="image" name="image" value="<%= product ? product.image : '' %>" placeholder="/images/jet.jpg" required>
+            <button type="button" class="btn-image-picker" onclick="document.getElementById('imagePicker').click()">📁 Pick Image</button>
+        </div>
+        <input type="file" id="imagePicker" accept="image/*" style="display: none;">
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required><%= product ? product.description : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="inStock">Availability</label>
+        <select id="inStock" name="inStock">
+            <option value="true" <%= product && product.inStock ? 'selected' : '' %>>In Stock</option>
+            <option value="false" <%= product && !product.inStock ? 'selected' : '' %>>Out of Stock</option>
+        </select>
+    </div>
+
+    <h3>Specifications (Optional)</h3>
+
+    <div class="form-group">
+        <label for="passengers">Passengers</label>
+        <input type="number" id="passengers" name="passengers" value="<%= product && product.specifications ? product.specifications.passengers : '' %>">
+    </div>
+
+    <div class="form-group">
+        <label for="range">Range</label>
+        <input type="text" id="range" name="range" value="<%= product && product.specifications ? product.specifications.range : '' %>" placeholder="e.g., 2,500 nm">
+    </div>
+
+    <div class="form-group">
+        <label for="speed">Speed</label>
+        <input type="text" id="speed" name="speed" value="<%= product && product.specifications ? product.specifications.speed : '' %>" placeholder="e.g., 550 mph">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-submit"><%= submitText %></button>
+        <a href="/admin/dashboard" class="btn-cancel">Cancel</a>
+    </div>
+</form>
