@@ -11,6 +11,7 @@ const checkoutRoutes = require('./routes/checkout');
 const productsRoutes = require('./routes/products');
 const adminRoutes = require('./routes/admin');
 const orderRoutes = require('./routes/order');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,11 +36,18 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set locals for user
+app.use((req, res, next) => {
+    res.locals.user = req.session.user;
+    next();
+});
+
 app.use('/', indexRoutes);
 app.use('/checkout', checkoutRoutes);
 app.use('/products', productsRoutes);
 app.use('/admin', adminRoutes);
 app.use('/order', orderRoutes);
+app.use('/auth', authRoutes);
 
 app.use((req, res) => {
     res.status(404).render('error', { 

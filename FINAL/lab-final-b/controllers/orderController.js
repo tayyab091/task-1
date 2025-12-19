@@ -36,11 +36,12 @@ const orderController = {
         let total = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         let discount = 0;
         const coupon = req.body.coupon;
-        if (coupon === 'SAVE10') {
-            discount = total * 0.1;
+        if (req.discountApplied) {
+            discount = total * req.discountRate;
             total -= discount;
         }
         const order = new Order({
+            user: req.session.user ? req.session.user._id : null,
             email: checkoutData.email,
             items: cartItems.map(item => ({
                 product: item._id,
@@ -61,25 +62,27 @@ const orderController = {
         });
     },
 
-    getMyOrders: (req, res) => {
-        const email = req.query.email;
-        if (!email) {
-            return res.render('my-orders', {
-                title: 'My Orders - BeJet',
-                page: 'my-orders',
-                orders: null
-            });
-        }
-        Order.find({ email }).sort({ createdAt: -1 }).then(orders => {
+    getMyOrders: async (req, res) => {
+        try {
+            let orders = [];
+            if (req.session.user) {
+                orders = await Order.find({ user: req.session.user._id }).sort({ createdAt: -1 });
+            } else {
+                const email = req.query.email;
+                if (email) {
+                    orders = await Order.find({ email }).sort({ createdAt: -1 });
+                }
+            }
             res.render('my-orders', {
                 title: 'My Orders - BeJet',
                 page: 'my-orders',
-                orders
+                orders,
+                email: req.query.email || ''
             });
-        }).catch(err => {
+        } catch (err) {
             console.error(err);
             res.status(500).render('error', { message: 'Error fetching orders', layout: false });
-        });
+        }
     }
 };
 
