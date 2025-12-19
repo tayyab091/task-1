@@ -1,9 +1,104 @@
 <div class="products-page">
     <div class="container">
-        <div class="page-header">
-            <h1>Our Exclusive Fleet</h1>
-            <p>Browse our collection of luxury private jets and premium services</p>
+        <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+            <div>
+                <h1>Our Exclusive Fleet</h1>
+                <p>Browse our collection of luxury private jets and premium services</p>
+            </div>
+            <div>
+                <a href="/admin/add-product" class="btn btn-primary" id="addItemBtn">Add Item</a>
+            </div>
         </div>
+
+
+                <!-- Purchase Modal -->
+                <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="purchaseProductTitle">Buy</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <img id="purchaseProductImage" src="" alt="product" style="width:120px;height:80px;object-fit:cover;border-radius:6px;">
+                                    <div>
+                                        <h6 id="purchaseProductName"></h6>
+                                        <p id="purchaseProductDesc" style="font-size:13px;color:#666;margin:0 0 8px 0;"></p>
+                                        <strong id="purchaseProductPrice"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a id="detailsLink" href="#" class="btn btn-secondary">View Details</a>
+                                <button type="button" id="confirmPurchaseBtn" class="btn btn-primary">Confirm Purchase</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Modal -->
+                <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body text-center">
+                                <h5 id="successMessage">Success!</h5>
+                                <button type="button" class="btn btn-success mt-3" data-bs-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                // Wait for full load so bootstrap JS is available
+                window.addEventListener('load', function() {
+                    const purchaseModalEl = document.getElementById('purchaseModal');
+                    const successModalEl = document.getElementById('successModal');
+                    if (!window.bootstrap) return;
+                    const purchaseModal = new bootstrap.Modal(purchaseModalEl);
+                    const successModal = new bootstrap.Modal(successModalEl);
+
+                    document.querySelectorAll('.btn-buy').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const id = this.dataset.id;
+                            const name = this.dataset.name;
+                            const price = this.dataset.price;
+                            const image = this.dataset.image;
+                            // Prefer reading the full hidden description if present
+                            let desc = '';
+                            const card = this.closest('.product-card');
+                            if (card) {
+                                const fullEl = card.querySelector('.product-full-desc');
+                                if (fullEl) desc = fullEl.textContent.trim();
+                                else {
+                                    const descEl = card.querySelector('.product-description');
+                                    if (descEl) desc = descEl.textContent.trim();
+                                }
+                            }
+                            if (!desc) desc = this.dataset.desc || '';
+
+                            document.getElementById('purchaseProductTitle').textContent = 'Buy ' + name;
+                            document.getElementById('purchaseProductName').textContent = name;
+                            document.getElementById('purchaseProductPrice').textContent = '$' + Number(price).toLocaleString();
+                            document.getElementById('purchaseProductImage').src = image;
+                            document.getElementById('purchaseProductDesc').textContent = desc;
+                            document.getElementById('detailsLink').href = '/products/' + id;
+
+                            purchaseModal.show();
+                        });
+                    });
+
+                    const confirmBtn = document.getElementById('confirmPurchaseBtn');
+                    if (confirmBtn) {
+                        confirmBtn.addEventListener('click', function() {
+                            purchaseModal.hide();
+                            const name = document.getElementById('purchaseProductName').textContent || '';
+                            document.getElementById('successMessage').textContent = 'Success! Purchase completed for ' + name;
+                            successModal.show();
+                        });
+                    }
+                });
+                </script>
 
         <div class="filters-section">
             <form method="GET" action="/products" class="filters-form">
@@ -69,6 +164,7 @@
                             <span class="product-category"><%= product.category %></span>
                             <h3 class="product-name"><%= product.name %></h3>
                             <p class="product-description"><%= product.description.substring(0, 100) %>...</p>
+                            <div class="product-full-desc" style="display:none;"><%= product.description %></div>
                             
                             <% if (product.specifications && product.specifications.passengers) { %>
                                 <div class="product-specs">
@@ -79,7 +175,15 @@
                             
                             <div class="product-footer">
                                 <span class="product-price">$<%= product.price.toLocaleString() %></span>
-                                <a href="/products/<%= product._id %>" class="btn btn-view">View Details</a>
+                                <button type="button" 
+                                        class="btn btn-buy" 
+                                        data-id="<%= product._id %>"
+                                        data-name="<%= product.name %>"
+                                        data-price="<%= product.price %>"
+                                        data-image="<%= product.image %>"
+                                        data-desc="<%= product.description %>">
+                                    Buy Now
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -304,6 +408,18 @@
 .btn-view:hover {
     background-color: #b08d4f;
 }
+
+.btn-buy {
+    background-color: #c9a961;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-buy:hover { background-color: #b08d4f; }
 
 .no-products {
     grid-column: 1 / -1;
