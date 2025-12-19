@@ -10,15 +10,8 @@
                 <li><a href="/#about">About</a></li>
                 <li><a href="/#services">Services</a></li>
                 <li><a href="/#contact">Contact</a></li>
-                <% if (user) { %>
-                <li>Welcome, <%= user.name %></li>
-                <li><a href="/order/preview">Order Preview (<%= (req.session && req.session.cart) ? req.session.cart.length : 0 %>)</a></li>
+                <li><a href="/order/preview">Order Preview (<%= (session && session.cart) ? session.cart.length : 0 %>)</a></li>
                 <li><a href="/order/my-orders">My Orders</a></li>
-                <li><a href="/auth/logout">Logout</a></li>
-                <% } else { %>
-                <li><a href="/auth/login">Login</a></li>
-                <li><a href="/auth/register">Register</a></li>
-                <% } %>
                 <li><a href="/admin/dashboard">Admin</a></li>
                 <li><a href="/checkout" class="buy-now">Book Now</a></li>
             </ul>

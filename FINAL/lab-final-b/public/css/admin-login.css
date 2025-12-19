@@ -4,7 +4,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
+
+/* Ensure no modals or overlays interfere */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    z-index: -1;
+}
+
 .login-container {
     background: white;
     padding: 40px;
@@ -12,6 +27,11 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     width: 100%;
     max-width: 400px;
+    position: relative;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 h1 {
     color: #2c3e50;
@@ -25,12 +45,17 @@ h1 {
 }
 .form-group {
     margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+    display: block;
 }
 label {
     display: block;
     margin-bottom: 8px;
     color: #2c3e50;
     font-weight: bold;
+    position: relative;
+    z-index: 1;
 }
 input[type="password"] {
     width: 100%;
@@ -39,6 +64,24 @@ input[type="password"] {
     border-radius: 5px;
     font-size: 16px;
     transition: border-color 0.3s;
+    position: relative;
+    z-index: 1;
+    background: white;
+    font-family: monospace;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Hide browser autocomplete dropdowns */
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+}
+
+input[type="password"]:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #2c3e50;
 }
 input[type="password"]:focus {
     outline: none;

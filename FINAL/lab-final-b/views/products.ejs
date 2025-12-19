@@ -31,7 +31,7 @@
                             </div>
                             <div class="modal-footer">
                                 <a id="detailsLink" href="#" class="btn btn-secondary">View Details</a>
-                                <button type="button" id="confirmPurchaseBtn" class="btn btn-primary">Confirm Purchase</button>
+                                <button type="button" id="confirmPurchaseBtn" class="btn btn-primary">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -58,9 +58,11 @@
                     const purchaseModal = new bootstrap.Modal(purchaseModalEl);
                     const successModal = new bootstrap.Modal(successModalEl);
 
+                    let currentProductId = null;
+
                     document.querySelectorAll('.btn-buy').forEach(btn => {
                         btn.addEventListener('click', function() {
-                            const id = this.dataset.id;
+                            currentProductId = this.dataset.id;
                             const name = this.dataset.name;
                             const price = this.dataset.price;
                             const image = this.dataset.image;
@@ -77,12 +79,12 @@
                             }
                             if (!desc) desc = this.dataset.desc || '';
 
-                            document.getElementById('purchaseProductTitle').textContent = 'Buy ' + name;
+                            document.getElementById('purchaseProductTitle').textContent = 'Add to Cart - ' + name;
                             document.getElementById('purchaseProductName').textContent = name;
                             document.getElementById('purchaseProductPrice').textContent = '$' + Number(price).toLocaleString();
                             document.getElementById('purchaseProductImage').src = image;
                             document.getElementById('purchaseProductDesc').textContent = desc;
-                            document.getElementById('detailsLink').href = '/products/' + id;
+                            document.getElementById('detailsLink').href = '/products/' + currentProductId;
 
                             purchaseModal.show();
                         });
@@ -91,10 +93,43 @@
                     const confirmBtn = document.getElementById('confirmPurchaseBtn');
                     if (confirmBtn) {
                         confirmBtn.addEventListener('click', function() {
-                            purchaseModal.hide();
-                            const name = document.getElementById('purchaseProductName').textContent || '';
-                            document.getElementById('successMessage').textContent = 'Success! Purchase completed for ' + name;
-                            successModal.show();
+                            if (!currentProductId) return;
+
+                            // Send POST request to add to cart
+                            fetch('/products/add-to-cart', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    id: currentProductId,
+                                    quantity: 1
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                purchaseModal.hide();
+                                if (data.success) {
+                                    // Update cart count in header
+                                    const cartLinks = document.querySelectorAll('a[href="/order/preview"]');
+                                    cartLinks.forEach(link => {
+                                        const text = link.textContent;
+                                        const match = text.match(/Order Preview \((\d+)\)/);
+                                        if (match) {
+                                            link.textContent = `Order Preview (${data.cartCount})`;
+                                        }
+                                    });
+                                    document.getElementById('successMessage').textContent = 'Success! Item added to cart';
+                                } else {
+                                    document.getElementById('successMessage').textContent = 'Error: ' + (data.error || 'Failed to add to cart');
+                                }
+                                successModal.show();
+                            })
+                            .catch(error => {
+                                purchaseModal.hide();
+                                document.getElementById('successMessage').textContent = 'Error: Failed to add to cart';
+                                successModal.show();
+                            });
                         });
                     }
                 });

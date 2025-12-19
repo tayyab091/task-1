@@ -20,7 +20,6 @@ const orderController = {
                 total -= discount;
             }
             const order = new Order({
-                user: req.session.user ? req.session.user._id : null,
                 email: checkoutData.email,
                 items: cartItems.map(item => ({
                     product: item._id,
@@ -32,11 +31,15 @@ const orderController = {
                 discount
             });
             order.save().then(() => {
+                console.log('Order saved successfully:', order._id);
                 req.session.cart = [];
+                req.session.userEmail = checkoutData.email; // Store email for future orders
                 delete req.session.checkoutData;
-                res.redirect('/success?orderId=' + order._id);
+                req.session.save(() => {
+                    res.redirect('/success?orderId=' + order._id);
+                });
             }).catch(err => {
-                console.error(err);
+                console.error('Error saving order:', err);
                 res.status(500).render('error', { message: 'Error placing order', layout: false });
             });
             return;
@@ -48,8 +51,8 @@ const orderController = {
         let total = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         let discount = 0;
         const coupon = req.query.coupon || req.body.coupon;
-        if (coupon === 'SAVE10') {
-            discount = total * 0.1;
+        if (req.discountApplied) {
+            discount = total * req.discountRate;
             total -= discount;
         }
         res.render('order-preview', {
@@ -59,7 +62,7 @@ const orderController = {
             total,
             discount,
             coupon,
-            email: req.session.user ? req.session.user.email : (req.session.checkoutData?.email || ''),
+            email: req.session.userEmail || (req.session.checkoutData?.email || ''),
             checkoutData: req.session.checkoutData || {}
         });
     },
@@ -67,22 +70,20 @@ const orderController = {
     getMyOrders: async (req, res) => {
         try {
             let orders = [];
-            if (req.session.user) {
-                orders = await Order.find({ user: req.session.user._id }).sort({ createdAt: -1 });
-            } else {
-                const email = req.query.email;
-                if (email) {
-                    orders = await Order.find({ email }).sort({ createdAt: -1 });
-                }
+            const email = req.session.userEmail || req.query.email;
+            console.log('Looking for orders with email:', email);
+            if (email) {
+                orders = await Order.find({ email }).sort({ createdAt: -1 });
+                console.log('Found orders:', orders.length);
             }
             res.render('my-orders', {
                 title: 'My Orders - BeJet',
                 page: 'my-orders',
                 orders,
-                email: req.query.email || ''
+                email: email || ''
             });
         } catch (err) {
-            console.error(err);
+            console.error('Error in getMyOrders:', err);
             res.status(500).render('error', { message: 'Error fetching orders', layout: false });
         }
     }

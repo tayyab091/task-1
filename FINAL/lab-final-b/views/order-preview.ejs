@@ -40,14 +40,6 @@
                         <button type="submit" formaction="/order/preview" formmethod="GET" class="btn btn-secondary">Apply</button>
                     </div>
                 </form>
-                <div class="d-grid gap-2">
-                    <form method="POST" action="/order/preview">
-                        <input type="hidden" name="coupon" value="<%= coupon %>">
-                        <input type="hidden" name="email" value="<%= email %>">
-                        <button type="submit" class="btn btn-success">Confirm Order</button>
-                    </form>
-                    <a href="/checkout" class="btn btn-secondary">Go Back to Cart</a>
-                </div>
             </div>
 
             <div class="col-md-7 col-lg-8">
@@ -171,35 +163,16 @@
             });
             
             $('#checkoutForm').submit(function(e) {
-                e.preventDefault();
-                let valid = true;
+                // Temporarily disable validation for testing
+                // e.preventDefault();
+                // let valid = true;
                 
-                const validateField = (field, condition) => {
-                    condition ? $(field).addClass('is-invalid') && (valid = false) : $(field).removeClass('is-invalid');
-                };
-                
-                validateField('#fullname', $('#fullname').val().length < 3);
-                validateField('#email', !$('#email').val().includes('@'));
-                validateField('#phone', $('#phone').val().length < 10);
-                validateField('#address', $('#address').val().length === 0);
-                validateField('#city', $('#city').val().length === 0);
-                validateField('#postalcode', $('#postalcode').val().length < 4);
-                validateField('#country', $('#country').val() === '');
-                validateField('#terms', !$('#terms').is(':checked'));
-                
-                if (!$('input[name="paymentMethod"]:checked').val()) {
-                    alert('Please select a payment method');
-                    valid = false;
-                } else {
-                    if ($('input[name="paymentMethod"]:checked').val() === 'credit') {
-                        validateField('#cc-name', $('#cc-name').val().length === 0);
-                        validateField('#cc-number', $('#cc-number').val().length === 0);
-                        validateField('#cc-expiration', $('#cc-expiration').val().length === 0);
-                        validateField('#cc-cvv', $('#cc-cvv').val().length === 0);
-                    }
-                }
-                
-                if (valid) this.submit();
+                console.log('Form submit triggered');
+                // Always submit for testing
+                // if (valid) {
+                    console.log('Submitting form...');
+                    this.submit();
+                // }
             });
         });
     </script>
